@@ -1,6 +1,6 @@
 import { JsonController, Param, Get, NotFoundError, UseBefore } from 'routing-controllers';
 import { validate } from 'class-validator';
-import UserService from '../services/user.service';
+import { UserService } from '../services/user.service';
 import { rateLimitMiddleware } from '../middlewares/rateLimitMiddleware';
 import logger from '../utils/logger';
 

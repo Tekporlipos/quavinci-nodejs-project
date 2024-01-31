@@ -10,9 +10,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserModel = void 0;
+// models/user.model.ts
 const typegoose_1 = require("@typegoose/typegoose");
-class User {
-}
+let User = class User {
+};
 __decorate([
     (0, typegoose_1.prop)({ required: true }),
     __metadata("design:type", String)
@@ -22,27 +23,27 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "email", void 0);
 __decorate([
-    (0, typegoose_1.prop)(),
-    __metadata("design:type", String)
-], User.prototype, "bio", void 0);
-__decorate([
-    (0, typegoose_1.prop)(),
-    __metadata("design:type", String)
-], User.prototype, "role", void 0);
-__decorate([
-    (0, typegoose_1.prop)(),
-    __metadata("design:type", Array)
+    (0, typegoose_1.prop)({ type: () => Object }) // Set languagePreferences as Mixed type
+    ,
+    __metadata("design:type", Object)
 ], User.prototype, "languagePreferences", void 0);
 __decorate([
-    (0, typegoose_1.prop)(),
-    __metadata("design:type", Boolean)
-], User.prototype, "twoFactorAuthenticationStatus", void 0);
-__decorate([
-    (0, typegoose_1.prop)(),
+    (0, typegoose_1.prop)({ type: () => Object }) // Set emailPreferences as Mixed type
+    ,
     __metadata("design:type", Object)
 ], User.prototype, "emailPreferences", void 0);
 __decorate([
-    (0, typegoose_1.prop)(),
-    __metadata("design:type", String)
-], User.prototype, "subscriptionStatus", void 0);
+    (0, typegoose_1.prop)({ default: Date.now }),
+    __metadata("design:type", Date)
+], User.prototype, "createdAt", void 0);
+__decorate([
+    (0, typegoose_1.prop)({ default: Date.now }),
+    __metadata("design:type", Date)
+], User.prototype, "updatedAt", void 0);
+User = __decorate([
+    (0, typegoose_1.modelOptions)({
+        options: { allowMixed: 0 }, // Set allowMixed to 0 to disable the warning
+        schemaOptions: { collection: 'users' },
+    })
+], User);
 exports.UserModel = (0, typegoose_1.getModelForClass)(User);

@@ -9,9 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserService = void 0;
 const User_1 = require("../models/User");
 class UserService {
-    constructor() { }
+    constructor() {
+        // Private constructor to prevent external instantiation
+    }
     static getInstance() {
         if (!UserService.instance) {
             UserService.instance = new UserService();
@@ -21,7 +24,7 @@ class UserService {
     getUserById(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const user = yield User_1.UserModel.findById(userId).lean(); // Use lean() to convert to plain JS object
+                const user = yield User_1.UserModel.findById(userId).lean();
                 return user;
             }
             catch (error) {
@@ -30,4 +33,4 @@ class UserService {
         });
     }
 }
-exports.default = UserService;
+exports.UserService = UserService;

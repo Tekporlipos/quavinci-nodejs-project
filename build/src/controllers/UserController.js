@@ -27,12 +27,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const routing_controllers_1 = require("routing-controllers");
 const class_validator_1 = require("class-validator");
-const user_service_1 = __importDefault(require("../services/user.service"));
+const user_service_1 = require("../services/user.service");
 const rateLimitMiddleware_1 = require("../middlewares/rateLimitMiddleware");
 const logger_1 = __importDefault(require("../utils/logger"));
 let UserController = class UserController {
     constructor() {
-        this.userService = user_service_1.default.getInstance();
+        this.userService = user_service_1.UserService.getInstance();
     }
     getUser(userId) {
         return __awaiter(this, void 0, void 0, function* () {

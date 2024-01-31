@@ -1,40 +1,28 @@
-import { prop, getModelForClass } from '@typegoose/typegoose';
+// models/user.model.ts
+import { prop, getModelForClass, modelOptions } from '@typegoose/typegoose';
 
+@modelOptions({
+    options: { allowMixed: 0 }, // Set allowMixed to 0 to disable the warning
+    schemaOptions: { collection: 'users' },
+})
 class User {
-    // Basic Information
     @prop({ required: true })
     name!: string;
 
     @prop({ required: true, unique: true })
     email!: string;
 
-    // Profile Information
-    @prop()
-    bio?: string;
+    @prop({ type: () => Object }) // Set languagePreferences as Mixed type
+    languagePreferences?: any; // 'any' here is used to represent the Mixed type
 
-    // Authentication and Authorization
-    @prop()
-    role?: string; // User role or permissions
+    @prop({ type: () => Object }) // Set emailPreferences as Mixed type
+    emailPreferences?: any; // 'any' here is used to represent the Mixed type
 
-    // Preferences
-    @prop()
-    languagePreferences?: string[];
+    @prop({ default: Date.now })
+    createdAt?: Date;
 
-    // Security Settings
-    @prop()
-    twoFactorAuthenticationStatus?: boolean;
-
-    // Communication Preferences
-    @prop()
-    emailPreferences?: {
-        marketing: boolean;
-        newsletter: boolean;
-    };
-
-    // Billing Information
-    @prop()
-    subscriptionStatus?: string;
-
+    @prop({ default: Date.now })
+    updatedAt?: Date;
 }
 
 export const UserModel = getModelForClass(User);

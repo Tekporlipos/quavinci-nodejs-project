@@ -1,10 +1,12 @@
 import User from '../models/user.interface';
 import { UserModel } from '../models/User';
 
-class UserService {
+export class UserService {
     private static instance: UserService;
 
-    private constructor() {}
+    private constructor() {
+        // Private constructor to prevent external instantiation
+    }
 
     static getInstance(): UserService {
         if (!UserService.instance) {
@@ -15,12 +17,12 @@ class UserService {
 
     async getUserById(userId: string): Promise<User | null> {
         try {
-            const user = await UserModel.findById(userId).lean(); // Use lean() to convert to plain JS object
+            const user = await UserModel.findById(userId).lean();
             return user as User | null;
         } catch (error) {
             throw error;
         }
     }
-}
 
-export default UserService;
+    // Add more methods for user-related operations as needed
+}
