@@ -20,48 +20,74 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const routing_controllers_1 = require("routing-controllers");
-const class_validator_1 = require("class-validator");
 const user_service_1 = require("../services/user.service");
 const rateLimitMiddleware_1 = require("../middlewares/rateLimitMiddleware");
-const logger_1 = __importDefault(require("../utils/logger"));
 let UserController = class UserController {
     constructor() {
         this.userService = user_service_1.UserService.getInstance();
     }
+    getAllUser() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.userService.getAllUsers();
+        });
+    }
+    addNewUser(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.userService.addUser(user);
+        });
+    }
+    updateUser(user, userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.userService.updateUser(userId, user);
+        });
+    }
+    deleteUser(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.userService.deleteUser(userId);
+        });
+    }
     getUser(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                // Validate userId
-                const errors = yield (0, class_validator_1.validate)({ userId });
-                if (errors.length > 0) {
-                    throw new routing_controllers_1.NotFoundError('User not found');
-                }
-                // Retrieve user from the database using the singleton instance of the service
-                const user = yield this.userService.getUserById(userId);
-                if (!user) {
-                    throw new routing_controllers_1.NotFoundError('User not found');
-                }
-                // Log request and response
-                logger_1.default.info(`GET /api/users/${userId}`);
-                logger_1.default.info('Response:', user);
-                return user;
-            }
-            catch (error) { // Specify 'any' or 'Error' as the type
-                // Log errors
-                logger_1.default.error('Error:', error.message);
-                // Return consistent error response
-                throw error;
-            }
+            return this.userService.getUserById(userId);
         });
     }
 };
 exports.UserController = UserController;
+__decorate([
+    (0, routing_controllers_1.Get)('/'),
+    (0, routing_controllers_1.UseBefore)(rateLimitMiddleware_1.rateLimitMiddleware),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getAllUser", null);
+__decorate([
+    (0, routing_controllers_1.Post)('/'),
+    (0, routing_controllers_1.UseBefore)(rateLimitMiddleware_1.rateLimitMiddleware),
+    __param(0, (0, routing_controllers_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "addNewUser", null);
+__decorate([
+    (0, routing_controllers_1.Patch)('/:userId'),
+    (0, routing_controllers_1.UseBefore)(rateLimitMiddleware_1.rateLimitMiddleware),
+    __param(0, (0, routing_controllers_1.Body)()),
+    __param(1, (0, routing_controllers_1.Param)('userId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "updateUser", null);
+__decorate([
+    (0, routing_controllers_1.Delete)('/:userId'),
+    (0, routing_controllers_1.UseBefore)(rateLimitMiddleware_1.rateLimitMiddleware),
+    __param(0, (0, routing_controllers_1.Param)('userId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "deleteUser", null);
 __decorate([
     (0, routing_controllers_1.Get)('/:userId'),
     (0, routing_controllers_1.UseBefore)(rateLimitMiddleware_1.rateLimitMiddleware),
@@ -71,6 +97,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUser", null);
 exports.UserController = UserController = __decorate([
-    (0, routing_controllers_1.JsonController)('/api/users'),
+    (0, routing_controllers_1.JsonController)('users'),
     __metadata("design:paramtypes", [])
 ], UserController);

@@ -1,10 +1,11 @@
-import { JsonController, Param, Get, NotFoundError, UseBefore } from 'routing-controllers';
+import {JsonController, Param, Get, NotFoundError, UseBefore, Post, Body, Patch, Delete} from 'routing-controllers';
 import { validate } from 'class-validator';
 import { UserService } from '../services/user.service';
 import { rateLimitMiddleware } from '../middlewares/rateLimitMiddleware';
 import logger from '../utils/logger';
+import IUser from "../models/user.interface";
 
-@JsonController('/api/users')
+@JsonController('users')
 export class UserController {
   private userService: UserService;
 
@@ -12,33 +13,37 @@ export class UserController {
     this.userService = UserService.getInstance();
   }
 
+  @Get('/')
+  @UseBefore(rateLimitMiddleware)
+  async getAllUser() {
+    return this.userService.getAllUsers()
+  }
+
+  @Post('/')
+  @UseBefore(rateLimitMiddleware)
+  async addNewUser(@Body() user:IUser) {
+    return this.userService.addUser(user)
+  }
+
+
+  @Patch('/:userId')
+  @UseBefore(rateLimitMiddleware)
+  async updateUser(@Body() user:IUser, @Param('userId') userId: string) {
+    return this.userService.updateUser(userId,user)
+  }
+
+
+  @Delete('/:userId')
+  @UseBefore(rateLimitMiddleware)
+  async deleteUser(@Param('userId') userId: string) {
+    return this.userService.deleteUser(userId)
+  }
+
+
+
   @Get('/:userId')
   @UseBefore(rateLimitMiddleware)
   async getUser(@Param('userId') userId: string) {
-    try {
-      // Validate userId
-      const errors = await validate({ userId });
-      if (errors.length > 0) {
-        throw new NotFoundError('User not found');
-      }
-
-      // Retrieve user from the database using the singleton instance of the service
-      const user = await this.userService.getUserById(userId);
-      if (!user) {
-        throw new NotFoundError('User not found');
-      }
-
-      // Log request and response
-      logger.info(`GET /api/users/${userId}`);
-      logger.info('Response:', user);
-
-      return user;
-    } catch (error: any) { // Specify 'any' or 'Error' as the type
-      // Log errors
-      logger.error('Error:', error.message);
-
-      // Return consistent error response
-      throw error;
-    }
+    return this.userService.getUserById(userId)
   }
 }

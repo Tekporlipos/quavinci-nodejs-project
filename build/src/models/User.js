@@ -10,7 +10,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserModel = void 0;
-// models/user.model.ts
 const typegoose_1 = require("@typegoose/typegoose");
 let User = class User {
 };
@@ -23,15 +22,21 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "email", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ type: () => Object }) // Set languagePreferences as Mixed type
-    ,
-    __metadata("design:type", Object)
-], User.prototype, "languagePreferences", void 0);
+    (0, typegoose_1.prop)({ required: true }),
+    __metadata("design:type", String)
+], User.prototype, "username", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ type: () => Object }) // Set emailPreferences as Mixed type
-    ,
-    __metadata("design:type", Object)
-], User.prototype, "emailPreferences", void 0);
+    (0, typegoose_1.prop)(),
+    __metadata("design:type", String)
+], User.prototype, "bio", void 0);
+__decorate([
+    (0, typegoose_1.prop)(),
+    __metadata("design:type", String)
+], User.prototype, "role", void 0);
+__decorate([
+    (0, typegoose_1.prop)(),
+    __metadata("design:type", String)
+], User.prototype, "subscriptionStatus", void 0);
 __decorate([
     (0, typegoose_1.prop)({ default: Date.now }),
     __metadata("design:type", Date)
@@ -42,8 +47,16 @@ __decorate([
 ], User.prototype, "updatedAt", void 0);
 User = __decorate([
     (0, typegoose_1.modelOptions)({
-        options: { allowMixed: 0 }, // Set allowMixed to 0 to disable the warning
-        schemaOptions: { collection: 'users' },
+        schemaOptions: {
+            collection: 'users',
+            toJSON: {
+                transform: (_, ret) => {
+                    ret.id = ret._id.toString();
+                    delete ret._id;
+                    delete ret.__v;
+                },
+            },
+        },
     })
 ], User);
 exports.UserModel = (0, typegoose_1.getModelForClass)(User);
