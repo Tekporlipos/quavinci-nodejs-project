@@ -29,6 +29,7 @@ export class UserService {
                     status: "Success",
                     message: "User data retried successfully",
                     data: {...userObject, id: user._id.toString()} as IUser
+                    ,timestamp:Date.now()
                 };
             });
         } catch (error: any) {
@@ -44,6 +45,7 @@ export class UserService {
                     status: "Success",
                     message: "User added successfully",
                     data: {...userObject, id: createdUser._id.toString()} as IUser
+                    ,timestamp:Date.now()
                 };
             })
             .catch((error) => {
@@ -60,6 +62,7 @@ export class UserService {
                     status: "Success",
                     message: "User updated successfully",
                     data: {...userObject, id: user._id.toString()} as IUser
+                    ,timestamp:Date.now()
                 };
             });
         } catch (error: any) {
@@ -70,7 +73,7 @@ export class UserService {
     async deleteUser(userId: string): Promise<CustomResponse> {
         try {
             UserModel.findByIdAndDelete(userId);
-            return {status: "Success", message: "User deleted successfully", data: null};
+            return {status: "Success", message: "User deleted successfully", data: null,timestamp:Date.now()};
         } catch (error: any) {
             throw new NotFoundError(error.message);
         }
@@ -84,7 +87,7 @@ export class UserService {
                         if (user._id) user.id = user._id.toString();
                     });
                 }
-                return {status: "Success", message: 'User data retried successfully', data: users as IUser[]};
+                return {status: "Success", message: 'User data retried successfully', data: users as IUser[],timestamp:Date.now()};
             })
             .catch(error => {
                 throw new NotFoundError(error.message);

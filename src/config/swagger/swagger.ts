@@ -22,9 +22,7 @@ export function setupSwagger(app: Express) {
     // Options for swagger-jsdoc
     const options = {
         swaggerDefinition,
-        apis: [
-            '**/swagger.json',
-        ],
+        apis: ['/**/controllers/*.ts'],
     };
 
     // Initialize swagger-jsdoc with ts-node
