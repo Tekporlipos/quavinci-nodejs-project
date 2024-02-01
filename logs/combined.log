@@ -1,0 +1,4 @@
+{"level":"info","message":{"clintIp":"::1","method":"POST","timestamp":"2024-02-01T01:30:27.680Z","url":"/api/v1/users"},"timestamp":"2024-02-01T01:30:27.680Z"}
+{"level":"info","message":{"method":"POST","responseTime":"178ms","status":500,"timestamp":"2024-02-01T01:30:27.858Z","url":"/api/v1/users"},"timestamp":"2024-02-01T01:30:27.858Z"}
+{"level":"info","message":{"clintIp":"::1","method":"POST","timestamp":"2024-02-01T01:31:42.293Z","url":"/api/v1/users"},"timestamp":"2024-02-01T01:31:42.293Z"}
+{"level":"info","message":{"method":"POST","responseTime":"5ms","status":500,"timestamp":"2024-02-01T01:31:42.298Z","url":"/api/v1/users"},"timestamp":"2024-02-01T01:31:42.298Z"}

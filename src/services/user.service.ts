@@ -8,7 +8,8 @@ import {UserValidation} from "../utils/validation/UserValidation";
 export class UserService {
     private static instance: UserService;
 
-    private constructor() {}
+    private constructor() {
+    }
 
     static getInstance(): UserService {
         if (!UserService.instance) {
@@ -17,14 +18,18 @@ export class UserService {
         return UserService.instance;
     }
 
-    async getUserById(userId: string): Promise<CustomResponse>{
+    async getUserById(userId: string): Promise<CustomResponse> {
         if (!mongoose.Types.ObjectId.isValid(userId)) {
             throw new BadRequestError('Invalid userId format');
         }
         try {
-            return UserModel.findById(userId).lean().then((user:any) => {
+            return UserModel.findById(userId).lean().then((user: any) => {
                 const userObject = user.toObject();
-                return { status: "Success", message: "User data retried successfully", data: { ...userObject, id: user._id.toString() } as IUser };
+                return {
+                    status: "Success",
+                    message: "User data retried successfully",
+                    data: {...userObject, id: user._id.toString()} as IUser
+                };
             });
         } catch (error: any) {
             throw new NotFoundError(error.message);
@@ -33,9 +38,13 @@ export class UserService {
 
     async addUser(user: UserValidation): Promise<CustomResponse> {
         return UserModel.create(user)
-            .then((createdUser:any) => {
+            .then((createdUser: any) => {
                 const userObject = createdUser.toObject();
-                return { status: "Success", message: "User added successfully", data: { ...userObject, id: createdUser._id.toString() } as IUser };
+                return {
+                    status: "Success",
+                    message: "User added successfully",
+                    data: {...userObject, id: createdUser._id.toString()} as IUser
+                };
             })
             .catch((error) => {
                 throw new Error(`Error adding user: ${error.message}`);
@@ -43,12 +52,15 @@ export class UserService {
     }
 
 
-
     async updateUser(userId: string, updatedUser: UserValidation): Promise<CustomResponse | null> {
         try {
-            return UserModel.findByIdAndUpdate(userId, updatedUser, { new: true }).lean().then((user:any) => {
+            return UserModel.findByIdAndUpdate(userId, updatedUser, {new: true}).lean().then((user: any) => {
                 const userObject = user.toObject();
-                return { status: "Success", message: "User updated successfully", data: { ...userObject, id: user._id.toString() } as IUser };
+                return {
+                    status: "Success",
+                    message: "User updated successfully",
+                    data: {...userObject, id: user._id.toString()} as IUser
+                };
             });
         } catch (error: any) {
             throw new NotFoundError(error.message);
@@ -57,9 +69,9 @@ export class UserService {
 
     async deleteUser(userId: string): Promise<CustomResponse> {
         try {
-           UserModel.findByIdAndDelete(userId);
-            return  { status: "Success", message: "User deleted successfully", data: null };
-        } catch (error:any) {
+            UserModel.findByIdAndDelete(userId);
+            return {status: "Success", message: "User deleted successfully", data: null};
+        } catch (error: any) {
             throw new NotFoundError(error.message);
         }
     }
@@ -68,11 +80,11 @@ export class UserService {
         return UserModel.find({}).lean().exec()
             .then(users => {
                 if (users && users.length > 0) {
-                    users.forEach((user:any) => {
+                    users.forEach((user: any) => {
                         if (user._id) user.id = user._id.toString();
                     });
                 }
-                return { status: "Success", message: 'User data retried successfully', data: users as IUser[] };
+                return {status: "Success", message: 'User data retried successfully', data: users as IUser[]};
             })
             .catch(error => {
                 throw new NotFoundError(error.message);

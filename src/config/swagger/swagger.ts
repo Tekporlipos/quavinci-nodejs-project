@@ -14,14 +14,16 @@ export function setupSwagger(app: Express) {
             description: 'The project is a TypeScript-based Node.js backend, and the task involves creating a RESTful API that adheres to modern development practices, using specific project dependencies.',
         },
         basePath: '/api/v1',
+        schemes: ['http'],
+        consumes: ["application/json"],
+        produces: ["application/json"]
     };
 
     // Options for swagger-jsdoc
     const options = {
         swaggerDefinition,
         apis: [
-            path.resolve(__dirname, '../src/controllers/*.ts'), // Path to the API files
-            path.resolve(__dirname, '../src/models/*.ts'),      // Path to the model files
+            '**/swagger.json',
         ],
     };
 
@@ -30,4 +32,5 @@ export function setupSwagger(app: Express) {
 
     // Serve Swagger documentation at /api-docs
     app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+    app.get(`/swagger.json`, (req, res) => res.json(swaggerSpec));
 }

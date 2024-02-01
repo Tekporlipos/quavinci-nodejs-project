@@ -1,13 +1,24 @@
-import { JsonController, Param, Get, NotFoundError, UseBefore, Post, Body, Patch, Delete, HttpCode } from 'routing-controllers';
-import { validate } from 'class-validator';
+import {
+  JsonController,
+  Param,
+  Get,
+  NotFoundError,
+  UseBefore,
+  Post,
+  Body,
+  Patch,
+  Delete,
+  HttpCode,
+  UseAfter
+} from 'routing-controllers';
 import { UserService } from '../services/user.service';
 import { rateLimitMiddleware } from '../middlewares/rateLimitMiddleware';
-import logger from '../utils/logger';
-import IUser from "../models/user.interface";
 import {UserValidation} from "../utils/validation/UserValidation";
+import {logRequests} from "../middlewares/logRequests";
 
 @JsonController('users')
 @UseBefore(rateLimitMiddleware)
+@UseBefore(logRequests)
 export class UserController {
   private userService: UserService;
 

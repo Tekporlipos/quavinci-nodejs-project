@@ -1,5 +1,4 @@
 import { prop, getModelForClass, modelOptions } from '@typegoose/typegoose';
-
 @modelOptions({
     schemaOptions: {
         collection: 'users',
