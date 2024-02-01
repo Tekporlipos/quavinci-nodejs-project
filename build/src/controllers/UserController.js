@@ -25,6 +25,7 @@ exports.UserController = void 0;
 const routing_controllers_1 = require("routing-controllers");
 const user_service_1 = require("../services/user.service");
 const rateLimitMiddleware_1 = require("../middlewares/rateLimitMiddleware");
+const UserValidation_1 = require("../utils/validation/UserValidation");
 let UserController = class UserController {
     constructor() {
         this.userService = user_service_1.UserService.getInstance();
@@ -58,31 +59,30 @@ let UserController = class UserController {
 exports.UserController = UserController;
 __decorate([
     (0, routing_controllers_1.Get)('/'),
-    (0, routing_controllers_1.UseBefore)(rateLimitMiddleware_1.rateLimitMiddleware),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getAllUser", null);
 __decorate([
     (0, routing_controllers_1.Post)('/'),
-    (0, routing_controllers_1.UseBefore)(rateLimitMiddleware_1.rateLimitMiddleware),
-    __param(0, (0, routing_controllers_1.Body)()),
+    (0, routing_controllers_1.HttpCode)(201),
+    __param(0, (0, routing_controllers_1.Body)({ validate: true })),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [UserValidation_1.UserValidation]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "addNewUser", null);
 __decorate([
     (0, routing_controllers_1.Patch)('/:userId'),
-    (0, routing_controllers_1.UseBefore)(rateLimitMiddleware_1.rateLimitMiddleware),
-    __param(0, (0, routing_controllers_1.Body)()),
+    (0, routing_controllers_1.HttpCode)(202),
+    __param(0, (0, routing_controllers_1.Body)({ validate: true })),
     __param(1, (0, routing_controllers_1.Param)('userId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:paramtypes", [UserValidation_1.UserValidation, String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updateUser", null);
 __decorate([
     (0, routing_controllers_1.Delete)('/:userId'),
-    (0, routing_controllers_1.UseBefore)(rateLimitMiddleware_1.rateLimitMiddleware),
+    (0, routing_controllers_1.HttpCode)(204),
     __param(0, (0, routing_controllers_1.Param)('userId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -90,7 +90,6 @@ __decorate([
 ], UserController.prototype, "deleteUser", null);
 __decorate([
     (0, routing_controllers_1.Get)('/:userId'),
-    (0, routing_controllers_1.UseBefore)(rateLimitMiddleware_1.rateLimitMiddleware),
     __param(0, (0, routing_controllers_1.Param)('userId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -98,5 +97,6 @@ __decorate([
 ], UserController.prototype, "getUser", null);
 exports.UserController = UserController = __decorate([
     (0, routing_controllers_1.JsonController)('users'),
+    (0, routing_controllers_1.UseBefore)(rateLimitMiddleware_1.rateLimitMiddleware),
     __metadata("design:paramtypes", [])
 ], UserController);

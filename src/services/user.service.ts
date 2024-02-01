@@ -1,6 +1,9 @@
 import IUser from '../models/user.interface';
 import {UserModel} from '../models/User';
-import {NotFoundError} from 'routing-controllers';
+import {BadRequestError, NotFoundError} from 'routing-controllers';
+import {CustomResponse} from "../utils/IResponseBody";
+import mongoose from "mongoose";
+import {UserValidation} from "../utils/validation/UserValidation";
 
 export class UserService {
     private static instance: UserService;
@@ -14,22 +17,25 @@ export class UserService {
         return UserService.instance;
     }
 
-    async getUserById(userId: string): Promise<IUser>{
+    async getUserById(userId: string): Promise<CustomResponse>{
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            throw new BadRequestError('Invalid userId format');
+        }
         try {
             return UserModel.findById(userId).lean().then((user:any) => {
                 const userObject = user.toObject();
-                return { ...userObject, id: user._id.toString() };
+                return { status: "Success", message: "User data retried successfully", data: { ...userObject, id: user._id.toString() } as IUser };
             });
         } catch (error: any) {
             throw new NotFoundError(error.message);
         }
     }
 
-    async addUser(user: IUser): Promise<IUser> {
+    async addUser(user: UserValidation): Promise<CustomResponse> {
         return UserModel.create(user)
             .then((createdUser:any) => {
                 const userObject = createdUser.toObject();
-                return { ...userObject, id: createdUser._id.toString() };
+                return { status: "Success", message: "User added successfully", data: { ...userObject, id: createdUser._id.toString() } as IUser };
             })
             .catch((error) => {
                 throw new Error(`Error adding user: ${error.message}`);
@@ -38,27 +44,27 @@ export class UserService {
 
 
 
-    async updateUser(userId: string, updatedUser: IUser): Promise<IUser | null> {
+    async updateUser(userId: string, updatedUser: UserValidation): Promise<CustomResponse | null> {
         try {
             return UserModel.findByIdAndUpdate(userId, updatedUser, { new: true }).lean().then((user:any) => {
                 const userObject = user.toObject();
-                return { ...userObject, id: user._id.toString() };
+                return { status: "Success", message: "User updated successfully", data: { ...userObject, id: user._id.toString() } as IUser };
             });
         } catch (error: any) {
             throw new NotFoundError(error.message);
         }
     }
 
-    async deleteUser(userId: string): Promise<{ message: string }> {
+    async deleteUser(userId: string): Promise<CustomResponse> {
         try {
            UserModel.findByIdAndDelete(userId);
-            return { message: 'User deleted successfully' };
+            return  { status: "Success", message: "User deleted successfully", data: null };
         } catch (error:any) {
             throw new NotFoundError(error.message);
         }
     }
 
-    async getAllUsers(): Promise<IUser[]> {
+    async getAllUsers(): Promise<CustomResponse> {
         return UserModel.find({}).lean().exec()
             .then(users => {
                 if (users && users.length > 0) {
@@ -66,7 +72,7 @@ export class UserService {
                         if (user._id) user.id = user._id.toString();
                     });
                 }
-                return users as IUser[];
+                return { status: "Success", message: 'User data retried successfully', data: users as IUser[] };
             })
             .catch(error => {
                 throw new NotFoundError(error.message);

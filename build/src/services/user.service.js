@@ -8,10 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const User_1 = require("../models/User");
 const routing_controllers_1 = require("routing-controllers");
+const mongoose_1 = __importDefault(require("mongoose"));
 class UserService {
     constructor() { }
     static getInstance() {
@@ -22,10 +26,13 @@ class UserService {
     }
     getUserById(userId) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (!mongoose_1.default.Types.ObjectId.isValid(userId)) {
+                throw new routing_controllers_1.BadRequestError('Invalid userId format');
+            }
             try {
                 return User_1.UserModel.findById(userId).lean().then((user) => {
                     const userObject = user.toObject();
-                    return Object.assign(Object.assign({}, userObject), { id: user._id.toString() });
+                    return { status: "Success", message: "User data retried successfully", data: Object.assign(Object.assign({}, userObject), { id: user._id.toString() }) };
                 });
             }
             catch (error) {
@@ -38,7 +45,7 @@ class UserService {
             return User_1.UserModel.create(user)
                 .then((createdUser) => {
                 const userObject = createdUser.toObject();
-                return Object.assign(Object.assign({}, userObject), { id: createdUser._id.toString() });
+                return { status: "Success", message: "User added successfully", data: Object.assign(Object.assign({}, userObject), { id: createdUser._id.toString() }) };
             })
                 .catch((error) => {
                 throw new Error(`Error adding user: ${error.message}`);
@@ -50,7 +57,7 @@ class UserService {
             try {
                 return User_1.UserModel.findByIdAndUpdate(userId, updatedUser, { new: true }).lean().then((user) => {
                     const userObject = user.toObject();
-                    return Object.assign(Object.assign({}, userObject), { id: user._id.toString() });
+                    return { status: "Success", message: "User updated successfully", data: Object.assign(Object.assign({}, userObject), { id: user._id.toString() }) };
                 });
             }
             catch (error) {
@@ -62,7 +69,7 @@ class UserService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 User_1.UserModel.findByIdAndDelete(userId);
-                return { message: 'User deleted successfully' };
+                return { status: "Success", message: "User deleted successfully", data: null };
             }
             catch (error) {
                 throw new routing_controllers_1.NotFoundError(error.message);
@@ -79,7 +86,7 @@ class UserService {
                             user.id = user._id.toString();
                     });
                 }
-                return users;
+                return { status: "Success", message: 'User data retried successfully', data: users };
             })
                 .catch(error => {
                 throw new routing_controllers_1.NotFoundError(error.message);
